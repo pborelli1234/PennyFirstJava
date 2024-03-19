@@ -3,12 +3,40 @@
 package com.codewithpenny;
 
 import java.util.*;
+import java.text.NumberFormat;
 
 public class Main {
     public static void main(String[] args) {
 
         System.out.println("Hello welcome to my first java application in a long time.");
 
+        //MyTypes();
+
+        //Calculate morgage
+        final byte MONTHSINYEAR = 12;
+        final byte PERCENT = 100;
+
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Principle: ");
+        int principle = scanner.nextInt();
+
+        System.out.print("Annual Interest Rate: ");
+        float annualInterest = scanner.nextFloat();
+        float monthlyInterest = annualInterest / PERCENT / MONTHSINYEAR;
+
+        System.out.print("Period (Years): ");
+        byte years = scanner.nextByte();
+        int numberOfPayments = years * MONTHSINYEAR;
+
+        double morgage = principle * (monthlyInterest * Math.pow(1 + monthlyInterest, numberOfPayments))
+                                        / (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
+
+        String morgageFormatted = NumberFormat.getCurrencyInstance().format(morgage);
+        System.out.println("Morgage: " + morgageFormatted);
+    }
+
+    private static void MyTypes() {
         //Primitive types
         int myAge = 30;
         int herAge = myAge;
@@ -88,5 +116,71 @@ public class Main {
         x += 8;
         System.out.println(y);
         System.out.println(x);
+
+        //result will be 16
+        int numX = 10 + 3 * 2;
+        System.out.println(numX);
+
+        //result will be 26
+        int numY = (10 + 3) * 2;
+        System.out.println(numY);
+
+        //Implicit casting - automatic conversion
+        short shortX = 1;
+        int intY = x + 2;
+
+        System.out.println();
+        System.out.println(intY);
+
+        //java will automatically cast 2 to a double
+        //Explicit casting
+        double doubleX = 1.1;
+        double doubleY = x + 2;
+
+        System.out.println(doubleY);
+
+        //convert string to integer
+        String newX = "1";
+        int newY = Integer.parseInt(newX) + 2;
+
+        System.out.println(newY);
+        System.out.println();
+
+        //Math Class
+        int result1 = Math.round(1.1F);
+        System.out.println(result1);
+
+        int result2 = (int)Math.ceil(1.1F);
+        System.out.println(result2);
+
+        //returns the greater number
+        int floor1 = Math.max(1, 5);
+        System.out.println(floor1);
+
+        //returns the minimum number
+        int floor2 = Math.min(2, 5);
+        System.out.println(floor2);
+
+        //gets a value between 1 and 100
+        int random1 = (int)Math.round(Math.random() * 100);
+        System.out.println(random1);
+
+        //Number Format - currency
+        NumberFormat currency = NumberFormat.getCurrencyInstance();
+        String currencyStr = currency.format(1234567.891);
+        System.out.println(currencyStr);
+
+        //Number Format - percent
+        NumberFormat percent = NumberFormat.getPercentInstance();
+        String percentStr = percent.format(0.1);
+        System.out.println(percentStr);
+
+        String percent2 = NumberFormat.getPercentInstance().format(0.45);
+        System.out.println(percent2);
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Name:  ");
+        String name = scanner.nextLine().trim();
+        System.out.println("You are " + name);
     }
 }
