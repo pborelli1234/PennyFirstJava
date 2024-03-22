@@ -6,34 +6,97 @@ import java.util.*;
 import java.text.NumberFormat;
 
 public class Main {
+    static final byte MONTHSINYEAR = 12;
+    static final byte PERCENT = 100;
+
     public static void main(String[] args) {
 
-        System.out.println("Hello welcome to my first java application in a long time.");
-
-        //MyTypes();
-
         //Calculate morgage
-        final byte MONTHSINYEAR = 12;
-        final byte PERCENT = 100;
+        int principle = (int)readNumber("Principle: ", 1000, 1_000_000);
+        float annualInterest =  (float)readNumber("Annual Interest Rate: ", 1, 30);
+        byte years = (byte)readNumber("Period (Years): ", 1, 30);
 
+        printMorgage(years, principle, annualInterest);
+        double morgage = calculateMorgage(principle, annualInterest, years);
+        printPaymentSchedule(years, principle, annualInterest);
+
+        //set payments from amount owing first to last - Payment Schedule
+        //System.out.println("PAYMENT SCHEDULE");
+        calculatePaymentSchedule(morgage, years);
+    }
+
+    private static void printMorgage(byte years, int principle, float annualInterest) {
+        double morgage = calculateMorgage(principle, annualInterest, years);
+        String morgageFormatted = NumberFormat.getCurrencyInstance().format(morgage);
+        System.out.println("MORGAGE");
+        System.out.println("-------");
+        System.out.println("Monthly Payments: " + morgageFormatted);
+    }
+
+    private static void printPaymentSchedule(byte years, int principle, float annualInterest) {
+        System.out.println();
+        System.out.println("PAYMENT SCHEDULE");
+        System.out.println("----------------");
+
+        for (short month = 1; month <= (years * MONTHSINYEAR); month++) {
+            double balance = calculateBalance(principle, annualInterest, years, month);
+            String balanceFormatted = NumberFormat.getCurrencyInstance().format(balance);
+            System.out.println(balanceFormatted);
+        }
+    }
+
+    public static double readNumber(String prompt, double minValue, double maxValue) {
         Scanner scanner = new Scanner(System.in);
+        double value;
 
-        System.out.print("Principle: ");
-        int principle = scanner.nextInt();
+        while (true) {
+            System.out.print(prompt);
+            value = scanner.nextFloat();
 
-        System.out.print("Annual Interest Rate: ");
-        float annualInterest = scanner.nextFloat();
+            if (value > minValue && value <= maxValue)
+                break;
+
+            System.out.println("Enter a number between " + minValue + " and " + maxValue + ".");
+        }
+
+        return value;
+    }
+
+    //Official answer
+    public static double calculateBalance(int principle, float annualInterest, byte years,
+                                          short numberOfPaymentsMade) {
+
         float monthlyInterest = annualInterest / PERCENT / MONTHSINYEAR;
+        short numberOfPayments = (short)(years * MONTHSINYEAR);
 
-        System.out.print("Period (Years): ");
-        byte years = scanner.nextByte();
-        int numberOfPayments = years * MONTHSINYEAR;
+        double balance = principle * (Math.pow(1 + monthlyInterest, numberOfPayments)
+                            - Math.pow(1 + monthlyInterest, numberOfPaymentsMade))
+                            / (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
+
+        return balance;
+    }
+
+    public static double calculateMorgage(int principle, float annualInterest, byte years) {
+
+        float monthlyInterest = annualInterest / PERCENT / MONTHSINYEAR;
+        short numberOfPayments = (short)(years * MONTHSINYEAR);
 
         double morgage = principle * (monthlyInterest * Math.pow(1 + monthlyInterest, numberOfPayments))
-                                        / (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
+                / (Math.pow(1 + monthlyInterest, numberOfPayments) - 1);
 
-        String morgageFormatted = NumberFormat.getCurrencyInstance().format(morgage);
-        System.out.println("Morgage: " + morgageFormatted);
+        return morgage;
+    }
+
+    public static void calculatePaymentSchedule(double monthlyPayment, byte years) {
+        double amountOwing = (monthlyPayment * (years * MONTHSINYEAR));
+        int totalMonths = years * MONTHSINYEAR;
+
+        for (int i = 0; i <= totalMonths; i++) {
+            String amountOwingFormatted = NumberFormat.getCurrencyInstance().format(amountOwing);
+            System.out.println(amountOwingFormatted);
+
+            amountOwing = (amountOwing - monthlyPayment);
+       }
     }
 
     private static void MyTypes() {
